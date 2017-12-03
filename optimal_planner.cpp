@@ -405,7 +405,8 @@ void TebOptimalPlanner::AddTEBVertices()
     if (teb_.sizeTimeDiffs()!=0 && i<teb_.sizeTimeDiffs())
     {
       teb_.TimeDiffVertex(i)->setId(id_counter++);
-      optimizer_->addVertex(teb_.TimeDiffVertex(i));
+
+	    optimizer_->addVertex(teb_.TimeDiffVertex(i));
     }
   } 
 }
@@ -884,37 +885,37 @@ void TebOptimalPlanner::AddEdgesJerk()
       optimizer_->addEdge(jerk_edge);
     }
 
-    // now add the usual acceleration edge for each tuple of three teb poses
+    // now add the usual jerk edge for each tuple of four teb poses
     for (int i=0; i < n - 3; ++i)
     {
-      EdgeAcceleration* acceleration_edge = new EdgeAcceleration;
-      acceleration_edge->setVertex(0,teb_.PoseVertex(i));
-      acceleration_edge->setVertex(1,teb_.PoseVertex(i+1));
-      acceleration_edge->setVertex(2,teb_.PoseVertex(i+2));
-      acceleration_edge->setVertex(3,teb_.PoseVertex(i+3));
+      Edgejerk* jerk_edge = new Edgejerk;
+      jerk_edge->setVertex(0,teb_.PoseVertex(i));
+      jerk_edge->setVertex(1,teb_.PoseVertex(i+1));
+      jerk_edge->setVertex(2,teb_.PoseVertex(i+2));
+      jerk_edge->setVertex(3,teb_.PoseVertex(i+3));
 
-      acceleration_edge->setVertex(4,teb_.TimeDiffVertex(i));
-      acceleration_edge->setVertex(5,teb_.TimeDiffVertex(i+1));
-      acceleration_edge->setVertex(6,teb_.TimeDiffVertex(i+2));
+      jerk_edge->setVertex(4,teb_.TimeDiffVertex(i));
+      jerk_edge->setVertex(5,teb_.TimeDiffVertex(i+1));
+      jerk_edge->setVertex(6,teb_.TimeDiffVertex(i+2));
 
-      acceleration_edge->setInformation(information);
-      acceleration_edge->setTebConfig(*cfg_);
-      optimizer_->addEdge(acceleration_edge);
+      jerk_edge->setInformation(information);
+      jerk_edge->setTebConfig(*cfg_);
+      optimizer_->addEdge(jerk_edge);
     }
     
     // check if a goal velocity should be taken into accound
     if (vel_goal_.first)
     {
-      EdgeAccelerationGoal* acceleration_edge = new EdgeAccelerationGoal;
-      acceleration_edge->setVertex(0,teb_.PoseVertex(n-3))
-      acceleration_edge->setVertex(1,teb_.PoseVertex(n-2));
-      acceleration_edge->setVertex(2,teb_.PoseVertex(n-1));
-      acceleration_edge->setVertex(3,teb_.TimeDiffVertex( teb_.sizeTimeDiffs()-2 ));
-      acceleration_edge->setVertex(3,teb_.TimeDiffVertex( teb_.sizeTimeDiffs()-1 ));
-      acceleration_edge->setGoalVelocity(vel_goal_.second);
-      acceleration_edge->setInformation(information);
-      acceleration_edge->setTebConfig(*cfg_);
-      optimizer_->addEdge(acceleration_edge);
+      EdgeJerkGoal* jerk_edge = new EdgeJerkGoal;
+      jerk_edge->setVertex(0,teb_.PoseVertex(n-3));
+      jerk_edge->setVertex(1,teb_.PoseVertex(n-2));
+      jerk_edge->setVertex(2,teb_.PoseVertex(n-1));
+      jerk_edge->setVertex(3,teb_.TimeDiffVertex( teb_.sizeTimeDiffs()-2 ));
+      jerk_edge->setVertex(4,teb_.TimeDiffVertex( teb_.sizeTimeDiffs()-1 ));
+      jerk_edge->setGoalVelocity(vel_goal_.second);
+      jerk_edge->setInformation(information);
+      jerk_edge->setTebConfig(*cfg_);
+      optimizer_->addEdge(jerk_edge);
     } 
 
 }
