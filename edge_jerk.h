@@ -241,8 +241,8 @@ public:
 
       // translational velocity directions
 
-      vel2 *= fast_sigmoid(100*(diff1.x()*cos(conf1->theta())+diff1.y()*sin(conf2->theta())));
-      vel3 *= fast_sigmoid(100*(diff2.x()*cos(conf2->theta())+diff2.y()*sin(conf2->theta())));
+      vel1 *= fast_sigmoid(100*(diff1.x()*cos(conf1->theta())+diff1.y()*sin(conf2->theta())));
+      vel2 *= fast_sigmoid(100*(diff2.x()*cos(conf2->theta())+diff2.y()*sin(conf2->theta())));
 
       // translational acceleration
 
